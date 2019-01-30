@@ -1,0 +1,13 @@
+*.pyc
+*.txt
+logs/*
+Kather_texture_2016_image_tiles_5000/*
+.ipynb_checkpoints/*
+.idea/*
+full_dataset/*
+rak_ewa/*
+extended_model_17_rand*
+nohup*
+datasets/
+venv/
+Kather_texture_2016_image_tiles_5000.zip
