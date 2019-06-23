@@ -1,8 +1,7 @@
 from config import COLOR_TYPE, CLASS_DICT, IMAGE_SIZE, EPS
 from keras.models import load_model
 from model_utils import single_class_accuracy, import_folder_to_numpy_array, get_dataset_path
-from matplotlib import pyplot as plt
-from simple_cnn import build_simple_cnn_model_with_dropout
+from ara_cnn import build_simple_cnn_model_with_dropout
 
 import keras.backend as K
 import numpy
@@ -85,11 +84,12 @@ def build_variational_inference_saliency_module(variational_inference_model_, ag
     return _variational_inference_saliency_function
 
 
-def compute_table_bald(distributions, measure_name):
+def compute_table_uncertainty(distributions, measure_name):
     """
-    This function computes BALD aquisition function for distributions.
+    This function computes the acquisition function for distributions.
     :param distributions: A table of distributions.
-    :return: A table of BALD values.
+    :param measure_name: Uncertainty measure - either Entropy or BALD.
+    :return: A table of uncertainty values.
     """
     def _compute_table_entropy(table):
         """

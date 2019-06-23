@@ -1,11 +1,11 @@
 from keras.optimizers import Adam
 
 # General image options
-IMAGE_SIZE = (128, 128)
-COLOR_TYPE = 'rgb'
+IMAGE_SIZE = (128, 128)  # input images are scaled to this resolution
+COLOR_TYPE = 'rgb'  # change to grayscale if your images are monochrome
 CHANNELS = 1 if COLOR_TYPE == 'grayscale' else 3
 
-# Main classes dict.
+# Main class dictionary - this needs to match folder names in your training dataset
 CLASS_DICT = {
     "01_TUMOR": 0,
     "02_STROMA": 1,

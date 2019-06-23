@@ -1,19 +1,18 @@
 #!/usr/bin/env python
 
 import os
-import shutil
+import logging
+import argparse
 
 from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau, TensorBoard, Callback
-from keras.layers import (Input, GlobalAveragePooling2D, add, AveragePooling2D,
-                          Dense, Dropout)
+from keras.layers import Input, GlobalAveragePooling2D, add, AveragePooling2D, Dense, Dropout
 from keras.layers.advanced_activations import LeakyReLU
-from keras.models import Model, load_model
+from keras.models import Model
 from keras.preprocessing.image import ImageDataGenerator
 from keras.regularizers import l2
-from matplotlib import pyplot as plt
-from model_utils import import_folder_to_numpy_array, single_class_accuracy, build_stem_cnn_block, get_dataset_path
+
+from model_utils import import_folder_to_numpy_array, single_class_accuracy, build_stem_cnn_block
 from config import CLASS_DICT, CHANNELS, COLOR_TYPE, IMAGE_SIZE, DEFAULT_OPTIMIZER
-import logging
 
 
 logger = logging.getLogger()
@@ -226,7 +225,7 @@ class RestartCallback(Callback):
         self.stopped = True
 
 
-def train_cycle(train_path, step, output_dir):
+def train_cycle(datasets_path, output_dir):
     THRESHOLD_LOSS_VALUE_1 = 2.0
     THRESHOLD_LOSS_VALUE_2 = 0.8
     RESTARTER_PATIENCE_1 = 10
@@ -234,9 +233,10 @@ def train_cycle(train_path, step, output_dir):
     TRAIN_BATCH_SIZE = 32
     TEST_BATCH_SIZE = 128
     SEED = 42
-    EPOCHS = 100
+    EPOCHS = 1
 
-    test_path = get_dataset_path("test")
+    test_path = os.path.join(datasets_path, "test")
+    train_path = os.path.join(datasets_path, "train")
 
     base_generator = ImageDataGenerator(rescale=1.0 / 255,
                                         horizontal_flip=True,
@@ -289,7 +289,7 @@ def train_cycle(train_path, step, output_dir):
     valid_generator = base_valid_generator.flow(valid_x, valid_y, batch_size=TEST_BATCH_SIZE, seed=SEED)
     test_generator = base_valid_generator.flow(test_x, test_y, batch_size=TEST_BATCH_SIZE, seed=SEED)
 
-    experiment_name = "extended_model_" + str(step)
+    experiment_name = "ara_cnn"
 
     tensorboard = TensorBoard()
     checkpointer = ModelCheckpoint(filepath=output_dir + "/" + experiment_name + ".h5")
@@ -305,7 +305,7 @@ def train_cycle(train_path, step, output_dir):
         monitor="main_output_loss",
         value=THRESHOLD_LOSS_VALUE_2, )
 
-    class_weights = {0: 5,
+    class_weights = {0: 1,
                      1: 1,
                      2: 1,
                      3: 1,
@@ -330,19 +330,31 @@ def train_cycle(train_path, step, output_dir):
     eval_result = model.evaluate_generator(multioutput_gen(test_generator),
                                            steps=int(test_x.shape[0] / TEST_BATCH_SIZE))
 
-    with open(output_dir + "/" + experiment_name + ".txt", "w") as dst:
-        for epoch_nb in range(len(history.history["loss"])):
-            dst.write("%d, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f\n" % (
-                epoch_nb + 1,
-                history.history["loss"][epoch_nb],
-                history.history["main_output_loss"][epoch_nb],
-                history.history["aux_output_loss"][epoch_nb],
-                history.history["main_output_acc"][epoch_nb],
-                history.history["aux_output_acc"][epoch_nb],
-                history.history["val_loss"][epoch_nb],
-                history.history["val_main_output_loss"][epoch_nb],
-                history.history["val_aux_output_loss"][epoch_nb],
-                history.history["val_main_output_acc"][epoch_nb],
-                history.history["val_aux_output_acc"][epoch_nb],
+    with open(output_dir + "/" + experiment_name + ".txt", "w") as destination:
+        destination.write('epoch_nr, loss, main_output_loss, aux_output_loss, main_output_acc, aux_output_acc, val_loss, val_main_output_loss, val_aux_output_loss, val_main_output_acc, val_aux_output_acc, eval_main_acc, eval_aux_acc\n')
+        for epoch_nr in range(len(history.history["loss"])):
+            destination.write("%d, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f\n" % (
+                epoch_nr + 1,
+                history.history["loss"][epoch_nr],
+                history.history["main_output_loss"][epoch_nr],
+                history.history["aux_output_loss"][epoch_nr],
+                history.history["main_output_acc"][epoch_nr],
+                history.history["aux_output_acc"][epoch_nr],
+                history.history["val_loss"][epoch_nr],
+                history.history["val_main_output_loss"][epoch_nr],
+                history.history["val_aux_output_loss"][epoch_nr],
+                history.history["val_main_output_acc"][epoch_nr],
+                history.history["val_aux_output_acc"][epoch_nr],
                 eval_result[3], #eval_main_acc
                 eval_result[5])) #eval_aux_acc
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--output-path', dest='output_path', help='Output folder for the model file', required=True)
+    parser.add_argument('--dataset-path', dest='dataset_path', help='Path to the folder with your dataset', required=True)
+    args = parser.parse_args()
+
+    if not os.path.exists(args.output_path):
+        os.mkdir(args.output_path)
+
+    train_cycle(args.datasets_path, args.output_path)
