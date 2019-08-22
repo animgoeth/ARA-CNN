@@ -122,6 +122,8 @@ except TypeError:
 
 ##### Active learning and identification if mislabelled training samples
 
+![ara_overview](http://www.mimuw.edu.pl/~lr370887/overview_figure_github.jpg)
+
 As presented in the paper (see section **Paper** below), uncertainty can serve as an acquisition function in active learning.
 By augmenting the training dataset with the most uncertain classes in subsequent active learning steps, the model can 
 achieve high classification accuracy faster than with an acquisition function amounting to a random selection. Thus, 
