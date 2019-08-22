@@ -11,7 +11,7 @@ from model_utils import import_folder_to_numpy_array, single_class_accuracy
 from config import CLASS_DICT, IMAGE_SIZE
 
 
-VARIATIONAL_SAMPLES = 2
+VARIATIONAL_SAMPLES = 50
 TEST_RUNS = 10
 
 

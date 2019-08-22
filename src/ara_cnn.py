@@ -28,12 +28,12 @@ def build_simple_cnn_model_with_dropout(
         freeze_batch=False):
     """
     This function builds a simple model with dropout.
-    :param input_size: A size of the input image (default None - then default values are provided).
-    :param dropout_layer: A number of filters in dropout layer.
-    :param dropout_rate: A rate of dropout.
-    :param nb_of_residual_blocks_in_first_path: Number of residual blocks in a first path.
-    :param nb_of_residual_blocks_in_second_path: Number of residual blocks in a second path.
-    :param freeze_batch: Flag if Batch normalization should be freezed while Variational inference.
+    :param input_size: Size of the input image (if None - default values are used).
+    :param dropout_layer: Number of filters in dropout layers.
+    :param dropout_rate: Dropout rate.
+    :param nb_of_residual_blocks_in_first_path: Number of residual blocks in the first path.
+    :param nb_of_residual_blocks_in_second_path: Number of residual blocks in the second path.
+    :param freeze_batch: Flag deciding if batch normalization should be frozen for variational inference.
     :return: A compiled model.
     """
     if input_size is None:
@@ -90,10 +90,10 @@ def build_simple_cnn_model_with_dropout(
 
 def create_dropout_output(dropout_layer, dropout_rate, output_name):
     """
-    This function creates an output from a model.
-    :param dropout_layer: Size of filters in dropout layer.
-    :param dropout_rate: A rate of dropout ratio.
-    :param output_name: A name of output tensor.
+    This function creates a dropout output.
+    :param dropout_layer: Size of filters in a dropout layer.
+    :param dropout_rate: Dropout rate.
+    :param output_name: Name of the output tensor.
     :return: An output layer.
     """
     def _dropout_output(acc_tensor):
@@ -110,8 +110,8 @@ def create_dropout_output(dropout_layer, dropout_rate, output_name):
 
 def create_output(output_name):
     """
-    This function creates an output from a model.
-    :param output_name: A name of output tensor.
+    This function creates an output from the model.
+    :param output_name: Name of output tensor.
     :return: An output layer.
     """
     def _output(acc_tensor):
@@ -124,10 +124,10 @@ def create_output(output_name):
 def create_residual_block(pooling, freeze_batch=False, filter_nb=64, filter_size=(3, 3)):
     """
     This function creates a residual block.
-    :param freeze_batch: Flag if Batch normalization should be freezed at variational inference time.
-    :param pooling: Flag if pooling should be applied.
+    :param freeze_batch: Flag deciding if batch normalization should be frozen for variational inference.
+    :param pooling: Flag deciding if pooling should be applied.
     :param filter_nb: Number of filters.
-    :param filter_size: A size of filters.
+    :param filter_size: Size of filters.
     :return: A residual block layer.
     """
     def _block(acc_tensor):
@@ -190,13 +190,7 @@ def build_simple_cnn_model(
     return simple_model
 
 
-def multioutput_gen(gen, nb_of_outputs=2):
-    """
-    A helper function which duplicates
-    :param gen:
-    :param nb_of_outputs:
-    :return:
-    """
+def multioutput_generator(gen, nb_of_outputs=2):
     for x, y in gen:
         yield x, [y] * nb_of_outputs
 
@@ -316,10 +310,10 @@ def train_cycle(datasets_path, output_dir):
 
     while True:
         model = build_simple_cnn_model_with_dropout()
-        history = model.fit_generator(multioutput_gen(train_generator),
+        history = model.fit_generator(multioutput_generator(train_generator),
                                       steps_per_epoch=int(train_x.shape[0] / TRAIN_BATCH_SIZE),
                                       epochs=EPOCHS,
-                                      validation_data=multioutput_gen(valid_generator),
+                                      validation_data=multioutput_generator(valid_generator),
                                       validation_steps=int(math.ceil(valid_x.shape[0] / TEST_BATCH_SIZE)),
                                       class_weight=class_weights,
                                       callbacks=[checkpointer, reducer, tensorboard, restarter_1, restarter_2],
@@ -327,7 +321,7 @@ def train_cycle(datasets_path, output_dir):
         if not restarter_1.stopped or restarter_2.stopped:
             break
 
-    eval_result = model.evaluate_generator(multioutput_gen(test_generator),
+    eval_result = model.evaluate_generator(multioutput_generator(test_generator),
                                            steps=int(test_x.shape[0] / TEST_BATCH_SIZE))
 
     with open(output_dir + "/" + experiment_name + ".txt", "w") as destination:
