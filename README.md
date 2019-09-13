@@ -17,7 +17,7 @@ Installation process:
 
 ```
 git clone https://github.com/animgoeth/ARA-CNN.git
-cd pathology-bayesian-cnn
+cd ARA-CNN
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -59,7 +59,7 @@ This downloads the dataset, extracts it and prepares a correct directory structu
 
 Execute the following command:
 
-`python src/simple_cnn.py --output-path /your/output/path --dataset-path /your/dataset/path`
+`python src/ara_cnn.py --output-path /your/output/path --dataset-path /your/dataset/path`
 
 This command starts the training process on data in `/your/dataset/path/train`. After training, it performs inference 
 on images in `/your/dataset/path/test` and writes all results to `/your/output/path/ara_cnn.txt` and the trained model 
