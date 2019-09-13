@@ -219,7 +219,7 @@ class RestartCallback(Callback):
         self.stopped = True
 
 
-def train_cycle(datasets_path, output_dir):
+def train_cycle(datasets_path, output_dir, epochs):
     THRESHOLD_LOSS_VALUE_1 = 2.0
     THRESHOLD_LOSS_VALUE_2 = 0.8
     RESTARTER_PATIENCE_1 = 10
@@ -227,7 +227,7 @@ def train_cycle(datasets_path, output_dir):
     TRAIN_BATCH_SIZE = 32
     TEST_BATCH_SIZE = 128
     SEED = 42
-    EPOCHS = 1
+    EPOCHS = epochs
 
     test_path = os.path.join(datasets_path, "test")
     train_path = os.path.join(datasets_path, "train")
@@ -346,9 +346,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--output-path', dest='output_path', help='Output folder for the model file', required=True)
     parser.add_argument('--dataset-path', dest='dataset_path', help='Path to the folder with your dataset', required=True)
+    parser.add_argument('--epochs', dest='epochs', help='Number of training epochs', required=False, default=200, type=int)
     args = parser.parse_args()
 
     if not os.path.exists(args.output_path):
         os.mkdir(args.output_path)
 
-    train_cycle(args.datasets_path, args.output_path)
+    train_cycle(args.dataset_path, args.output_path, args.epochs)

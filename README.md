@@ -59,11 +59,11 @@ This downloads the dataset, extracts it and prepares a correct directory structu
 
 Execute the following command:
 
-`python src/ara_cnn.py --output-path /your/output/path --dataset-path /your/dataset/path`
+`python src/ara_cnn.py --output-path /your/output/path --dataset-path /your/dataset/path --epochs EPOCHS`
 
 This command starts the training process on data in `/your/dataset/path/train`. After training, it performs inference 
 on images in `/your/dataset/path/test` and writes all results to `/your/output/path/ara_cnn.txt` and the trained model 
-to `/your/output/path/ara_cnn.h5`.
+to `/your/output/path/ara_cnn.h5`. The number of training epochs is set with the `--epochs` option.
 
 `ara_cnn.txt` has the following format:
 
