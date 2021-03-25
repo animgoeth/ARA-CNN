@@ -11,7 +11,7 @@ olefile==0.44
 pbr==3.1.1
 Pillow==6.2.0
 protobuf==3.6.1
-PyYAML==3.12
+PyYAML==5.4
 scikit-learn==0.18.2
 scipy==0.19.1
 six==1.10.0
