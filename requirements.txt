@@ -9,7 +9,7 @@ mock==2.0.0
 numpy==1.16.4
 olefile==0.44
 pbr==3.1.1
-Pillow==6.2.0
+Pillow==8.3.2
 protobuf==3.6.1
 PyYAML==3.12
 scikit-learn==0.18.2
