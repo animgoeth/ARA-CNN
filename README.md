@@ -144,13 +144,13 @@ and misclassified files from the training dataset.
 
 ##### Paper
 
-The ARA framework and all accompanying results are described in this pre-print paper:
+The ARA framework and all accompanying results are described in this paper:
 
 _**ARA: accurate, reliable and active histopathological image classification framework with Bayesian deep learning**_
 <br />
 Łukasz Rączkowski, Marcin Możejko, Joanna Zambonelli, Ewa Szczurek
 <br />
-bioRxiv 658138; doi: https://doi.org/10.1101/658138 
+Scientific Reports volume 9, Article number: 14347 (2019); doi: https://doi.org/10.1038/s41598-019-50587-1
 
 ##### Contact
 
