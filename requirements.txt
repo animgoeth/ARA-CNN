@@ -10,7 +10,7 @@ numpy==1.16.4
 olefile==0.44
 pbr==3.1.1
 Pillow==6.2.0
-protobuf==3.6.1
+protobuf==3.18.3
 PyYAML==3.12
 scikit-learn==0.18.2
 scipy==0.19.1
